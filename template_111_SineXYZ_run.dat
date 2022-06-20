@@ -1,0 +1,141 @@
+$-----------------------------------------------------
+$        EXECUTIVE CONTROL SECTION:
+$-----------------------------------------------------
+SOL 111              $ Solution asked (111=Modal Frequency Response)
+DIAG 8               $ Neglect / Requests diagnostic output and options
+TIME 1000000         $ Sets the maximum CPU and I/O time (in minutes)
+$-----------------------------------------------------
+$        CASE CONTROL SECTION:
+$-----------------------------------------------------
+CEND                       $ Designates the end of the Executive Control Section
+$-----------------------------------------------------
+ECHO = NONE                $ Neglect / Prints (or not) the Bulk Data in output                                                             
+SPC = 1                    $ Selecting the Boundary Condition set to be applied
+MPC = 12                   $ Neglect
+METHOD = 1                 $ Selection of the real eigenvalues extraction method
+FREQ = 1       $ Set of forcing frequencies to be solved in freq. resp. problems
+AUTOSPC(NOZERO)=YES			 $ Constraining stiffness singularities
+$
+$------------ Definition of the node set whose ACCELERATION output is asked: 
+$ FORCING
+$  9101
+$ PILOTS:
+$  13165
+$  927
+$  931
+$  1000
+$ UNITS
+$  251
+$  333
+$  270
+$  260
+$ PAYLOAD
+$  168
+$
+SET 10 = 9101,
+251,
+168
+$
+$------------ Definition of the element set whose int. FORCES output is asked:    
+SET 20 = 999991,
+         999992,
+         999993,
+         999994,
+         999995,
+         999996
+$
+$------------ Definition of the node set whose DISPLACEMENTS output is asked: 
+SET 30 = 13165                  
+ACCELERATION(SORT2,PHASE,PUNCH) = 10 $ Requests the output for the set specified
+ELFORCE(SORT2,PHASE,PUNCH) = 20      $ Requests the output for the set specified
+$DISPLACEMENT(SORT2,PHASE,PUNCH) = 30 $ Requests the output for the set specified
+$
+SUBCASE 10                           $ Defining the analysis subcase n
+LABEL = X-axis excitation            $ Subcase n title
+DLOAD = 11                $ Selecting the Load set to be applied in subcase n
+SDAMP = 10                $ Selecting the Damping set to be applied in subcase n
+$NSM = 2010001 $ Recalling possible Non Structural Mass recalled
+$
+SUBCASE 20                           $ Defining the analysis subcase n
+LABEL = y-axis excitation            $ Subcase n title
+DLOAD = 21                $ Selecting the Load set to be applied in subcase n
+SDAMP = 10                $ Selecting the Damping set to be applied in subcase n
+$NSM = 2010001 $ Recalling possible Non Structural Mass recalled
+$
+$
+SUBCASE 30                           $ Defining the analysis subcase n
+LABEL = z-axis excitation            $ Subcase n title
+DLOAD = 31                $ Selecting the Load set to be applied in subcase n
+SDAMP = 10                $ Selecting the Damping set to be applied in subcase n
+$NSM = 2010001 $ Recalling possible Non Structural Mass recalled
+$    
+$SUBCASE 40                           $ Defining the analysis subcase n
+$LABEL = xy-axis-combined 45° excitation  $ Subcase n title
+$DLOAD = 41                $ Selecting the Load set to be applied in subcase n
+$SDAMP = 10                $ Selecting the Damping set to be applied in subcase n
+$NSM = 2010001 $ Recalling possible Non Structural Mass recalled
+$-----------------------------------------------------
+BEGIN BULK
+$-----------------------------------------------------
+$       BULK DATA SECTION:
+$-----------------------------------------------------
+PARAM,GRDPNT,0      $ Neglect / reference point taken the basic coord. system
+PARAM,SNORM,0.      $ Neglect / reference point taken the basic coord. system
+PARAM,K6ROT,1.0     $ CQUAD4/CTRIA3 normal rotation penalty stiffness factor
+PARAM,MAXRATIO,1.E7 $ Maximal allowed ratios on elements on the diagonal of the
+$ stiffness matrix w.r.t. to the diagonal of the triangular factor 
+$ (to avoiding singularities / mechanisms)
+PARAM,RESVEC,YES    $ Requests the calculation of resifual vectors
+MPCADD   12      1       100     $ Neglect      
+$ PARAM,KDAMP,-1 $ if -1, the viscous modal damping is entered into the 
+$ complex stiffness matrix as structural damping                                         
+$                                               
+$  Table of damping, inserted throygh the quality / amplification factor Q:       
+TABDMP1 10      Q                                                       +
++       0.0     25.0    6.0     25.0    6.01    25.0    14.0    25.0    +
++       14.01   25.0    28.0    25.0    28.01   25.0    38.0    25.0    +
++       38.01   25.0    45.0    25.0    45.01   25.0    60.0    25.0    +
++       60.01   25.0    140.0   25.0    ENDT
+$        
+EIGRL,1,-1.,175.     $ Real eigenvalue freq. range with Lanczos method   
+$         
+RLOAD1,11,11,,,141,,ACCE $ Defining the freq. dep. dynamic load for the dir. n
+TABLED1 141 $ Table providing the freq. dep. dynamic load for the dir. n
+        0.0     1.0     150.0   1.0     ENDT              
+RLOAD1,21,12,,,241,,ACCE $ Defining the freq. dep. dynamic load for the dir. n
+TABLED1 241 $ Table providing the freq. dep. dynamic load for the dir. n
+        0.0     1.0     150.0   1.0     ENDT            
+RLOAD1,31,13,,,341,,ACCE $ Defining the freq. dep. dynamic load for the dir. n
+TABLED1 341 $ Table providing the freq. dep. dynamic load for the dir. n
+        0.0     1.0     150.0   1.0     ENDT               
+$RLOAD1,41,11,,,441,,ACCE $ Defining the freq. dep. dynamic load for the dir. n
+$RLOAD1,41,12,,,441,,ACCE $ Defining the freq. dep. dynamic load for the dir. n
+$TABLED1 441 $ Table providing the freq. dep. dynamic load for the dir. n
+$        0.0     0.707171100.0   0.707171ENDT
+$
+FREQ1,1,1.,0.1,1240 $ Forcing frequencies to be solved in freq. resp. problems
+$ FREQ5    1       5.      125.    0.995   1.00    1.005
+$$$1$$$$___2____----3---____4___----5---___6____----7---___8____----9---__10____
+INCLUDE 'SC.bdf' 
+$
+$ GRID whose motion has to be enforced + respective very stiff CELAS2: 
+GRID     9999101       0 0.0     0.0    24.596         0       0                                                                          
+CELAS2    999991  1.E+12 9999101       1    9101       1
+CELAS2    999992  1.E+12 9999101       2    9101       2
+CELAS2    999993  1.E+12 9999101       3    9101       3
+CELAS2    999994  1.E+12 9999101       4    9101       4
+CELAS2    999995  1.E+12 9999101       5    9101       5
+CELAS2    999996  1.E+12 9999101       6    9101       6
+$ GRID at the center of the Ring IF:
+GRID        9101       0 0.0     0.0    24.596         0       0     
+$ Rigid element connecting the ring nodes to the central ring node
+RBE2         835    9101  123456     927     926     925     924   13165+       
++           1003    1002    1001    1000     999     998     997     931+       
++            930     929     928
+$$$1$$$$___2____----3---____4___----5---___6____----7---___8____----9---__10____
+SPC1     1       123456  9999101   $ The enforced node (to be fully constrained)
+SPCD,11,9999101,1,1.0 $ Defining the enforced displacement for the enforced node
+SPCD,12,9999101,2,1.0 $ Defining the enforced displacement for the enforced node
+SPCD,13,9999101,3,1.0 $ Defining the enforced displacement for the enforced node
+$        
+ENDDATA               $ Designates the end of the Bulk Data Section

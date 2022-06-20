@@ -1,0 +1,37 @@
+$ For FF modal analysis comment the rows 15 an 31
+$ For HM modal analysis insert the nodes to be constrined from row 31
+$-----------------------------------------------------
+$       EXECUTIVE CONTROL SECTION:
+$-----------------------------------------------------
+SOL 103                  $ Solution asked (103=modal solution)
+DIAG 5,6,8               $ Neglect / Requests diagnostic output and options
+TIME 1000000             $ Sets the maximum CPU and I/O time (in minutes)
+$-----------------------------------------------------
+CEND                     $ Designates the end of the Executive Control Section
+$-----------------------------------------------------
+$         CASE CONTROL SECTION:
+$-----------------------------------------------------
+ECHO=NONE                $ Neglect / Prints (or not) the Bulk Data in the output
+METHOD = 1               $ Selection of the real eigenvalues extraction method
+SPC = 1     $ Boundary Condition set to be applied for HM modal (Comment for FF)
+DISP(plot)=ALL           $ Asking for eigenvectors (intended as displ.)
+SPCFORCE(PLOT) = ALL     $ Asking for constraint forces results
+MEFFMASS(all)=YES        $ Asking modal effective mass and participation factors
+GROUNDCHECK(SET=ALL)=YES $ Perform grounding checks on the stiffness matrix
+WEIGHTCHECK(SET=ALL)=YES $ Compute rigid body mass, verify it and print it
+AUTOSPC(NOZERO)=YES      $ Constraining stiffness singularities
+$-----------------------------------------------------
+BEGIN BULK $ Designates the Case Control Section end/Bulk Data Section start
+$-----------------------------------------------------
+$        BULK DATA SECTION:
+$-----------------------------------------------------
+PARAM   GRDPNT  0      $ Neglect / reference point taken the basic coord. system
+PARAM   POST    -1     $ Defines the format of the .OP2 output file
+$$$1$$$$___2____----3---____4___----5---___6____----7---___8____----9---__10____
+SPC1     1       123456 ????????   $ Single-point constrints (BC) for HM modal
+$EIGRL   1       0.0     200. $ Real eigenvalue freq. range with Lanczos method
+EIGRL,1,,,20       $ Real eigenvalue calculation up to the first 20 eigenvalues
+$
+INCLUDE '??????????'  $ Inserts an additional file into the input file
+$-----------------------------------------------------
+ENDDATA               $ Designates the end of the Bulk Data Section

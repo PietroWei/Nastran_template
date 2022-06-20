@@ -1,0 +1,187 @@
+$-----------------------------------------------------
+$       EXECUTIVE CONTROL SECTION:
+$-----------------------------------------------------
+SOL 101                    $ Solution asked (101=linear static solution)
+DIAG 8                     $ Neglect / Requests diagnostic output and options 
+TIME 1000000               $ Sets the maximum CPU and I/O time (in minutes)
+$-----------------------------------------------------
+CEND                       $ Designates the end of the Executive Control Section
+$-----------------------------------------------------
+$        CASE CONTROL SECTION:
+$-----------------------------------------------------
+RIGID=LAGRAN               $ Allow to consider the CTE for rigid elements
+ECHO = NONE                $ Neglect / Prints (or not) the Bulk Data in output                                                
+DISPLACEMENT(PLOT) = ALL   $ Asking for displ. results
+$STRESS(PLOT) = ALL        $ Asking for stress results
+ELFORCES(PLOT) = ALL       $ Asking for element forces. results
+SPCFORCES(PLOT) = ALL      $ Asking for constraint forces results
+AUTOSPC(NOZERO)=YES        $ Constraining stiffness singularities
+$
+$MPC = 12                   $ Neglect 
+$
+TEMPERATURE(INITIAL)= 9    $ Recalling the Ref. Temp. defined in BULK DATA
+SUBCASE 1                  $ Defining the analysis subcase n
+   SUBTITLE = 1 Thermoelastic $ Subcase n title
+   TEMPERATURE(LOAD) = 1    $ Temperature Load set to be applied in subcase n
+   $SPC = 1                 $ Selecting the Boundary Condition set to be applied
+$-----------------------------------------------------
+BEGIN BULK $ Designates the Case Control Section end/Bulk Data Section start
+$-----------------------------------------------------
+$       BULK DATA SECTION:
+$-----------------------------------------------------
+PARAM,GRDPNT,0      $ Neglect / reference point taken the basic coord. system
+PARAM,SNORM,20.     $ Neglect / about the Grid Point Normal of Adjacent Shells
+PARAM,K6ROT,100.    $ CQUAD4/CTRIA3 normal rotation penalty stiffness factor
+PARAM,MAXRATIO,1.E7 $ Maximal allowed ratios on elements on the diagonal of the
+$ stiffness matrix w.r.t. to the diagonal of the triangular factor 
+$ (to avoiding singularities / mechanisms)
+PARAM,POST,-1       $ Defines the format of the .OP2 output file
+PARAM,INREL,-2      $ Exploits the inertia of the struct. to constraint its CoG
+TEMPD          9     20. $ Defining the Reference Temperature 
+$
+INCLUDE '...'             $ Inserts an additional file into the input file 
+INCLUDE '...'             $ Inserts an additional file into the input file
+$
+$$$1$$$$___2____----3---____4___----5---___6____----7---___8____----9---__10____
+$SPC1     1       123456 ????????   $ Defining single-point constrints (BC)
+$-----------------------------------------------------
+ENDDATA               $ Designates the end of the Bulk Data Section
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
